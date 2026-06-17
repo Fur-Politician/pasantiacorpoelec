@@ -1,0 +1,154 @@
+:root {
+  --corpo-red: #E30613;
+  --corpo-black: #1A1A1A;
+  --corpo-grey: #F3F4F6;
+  --corpo-blue: #00AEEF;
+  --white: #FFFFFF;
+}
+
+.landing-container {
+  font-family: 'Inter', sans-serif;
+  color: var(--corpo-black);
+}
+
+/* Navbar Styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 5%;
+  background: var(--corpo-black);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 3px solid var(--corpo-red);
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: #ccc;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  color: var(--white);
+}
+
+.corpoelec-logo-placeholder {
+  text-align: right;
+}
+
+.logo-text {
+  font-weight: 900;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.red-accent-bar {
+  height: 4px;
+  background: var(--corpo-red);
+  width: 40px;
+  margin-left: auto;
+}
+
+/* Slider Styles */
+.hero-slider {
+  position: relative;
+  height: 80vh;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+.slide-content {
+  color: white;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.slide-title {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.btn-primary {
+  background: var(--corpo-red);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid var(--white);
+  padding: 12px 30px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 4rem 10%;
+  background: var(--corpo-grey);
+}
+
+.feature-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: transform 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.icon-box {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Footer */
+.landing-footer {
+  background: var(--corpo-black);
+  color: #888;
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.9rem;
+}

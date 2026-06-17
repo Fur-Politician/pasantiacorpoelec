@@ -1,0 +1,106 @@
+/* Estética inspirada en el formato de asignación de materiales - Corpoelec */
+:root {
+    --corpo-red: #E30613;
+    --corpo-black: #1A1A1A;
+    --corpo-grey-light: #F3F4F6;
+    --corpo-grey-dark: #6B7280;
+    --corpo-blue: #00AEEF;
+    --white: #FFFFFF;
+}
+
+.table-container {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin: 20px;
+}
+
+.table-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--corpo-grey-light);
+    padding-bottom: 1rem;
+}
+
+.table-title {
+    color: var(--corpo-black);
+    font-weight: 700;
+    font-size: 1.5rem;
+    border-left: 4px solid var(--corpo-red);
+    padding-left: 12px;
+}
+
+.btn-new-withdrawal {
+    background-color: var(--corpo-red);
+    color: var(--white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-new-withdrawal:hover {
+    background-color: #b5050f;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter', sans-serif;
+}
+
+.custom-table thead tr {
+    background-color: var(--corpo-black);
+    color: var(--white);
+    text-align: left;
+}
+
+.custom-table th, .custom-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+.cell-id {
+    color: var(--corpo-grey-dark);
+    font-weight: 500;
+}
+
+.cell-quantity {
+    font-weight: 700;
+    color: var(--corpo-black);
+}
+
+.font-bold { font-weight: 600; }
+
+.text-center { text-align: center; }
+
+/* Estilos de botones de acción */
+.btn-icon {
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin: 0 5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.btn-info {
+    color: var(--corpo-blue);
+    border: 1px solid var(--corpo-blue);
+}
+
+.btn-report {
+    color: var(--corpo-red);
+    border: 1px solid var(--corpo-red);
+    font-weight: bold;
+}
