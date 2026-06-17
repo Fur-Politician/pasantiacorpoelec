@@ -25,3 +25,5 @@ Implementa bloques try/catch para todo el código asíncrono y las interacciones
 Añade comentarios que expliquen la lógica de negocio (el por qué), no la sintaxis evidente (el qué).
 Seguridad por Defecto: Nunca incluyas credenciales quemadas en el código. Simula siempre llamadas a process.env.
 Modularidad: Si la solución es larga, divídela en archivos lógicos (ej. routes.js, controller.js, dbComponent.jsx).
+
+Toda imagen que vayas a utilizar, descargala y usala de forma local.

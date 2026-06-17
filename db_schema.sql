@@ -53,3 +53,7 @@ CREATE TABLE asistencias (
     longitud DECIMAL(11, 8),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+-- Usuario Administrador Temporal
+INSERT INTO usuarios (cedula, nombre, cargo, rol, password) 
+VALUES ('31325616', 'Admin Sistema', 'Administrador IT', 'admin', '123');
