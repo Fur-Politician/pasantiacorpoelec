@@ -6,8 +6,12 @@ CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cedula VARCHAR(20) UNIQUE NOT NULL,
     nombre VARCHAR(100) NOT NULL,
-    cargo VARCHAR(50),
-    rol ENUM('admin', 'operador', 'visor') DEFAULT 'operador',
+    apellido VARCHAR(100) NOT NULL,
+    rol ENUM('Admin', 'supervisor', 'trabajador') DEFAULT 'trabajador',
+    departamento VARCHAR(100),
+    subdepartamento VARCHAR(100),
+    rol_especifico VARCHAR(100),
+    cargo VARCHAR(100), -- Mantenido por compatibilidad o descripción libre
     password VARCHAR(255) NOT NULL
 );
 
@@ -43,6 +47,10 @@ CREATE TABLE retiros_materiales (
     FOREIGN KEY (material_id) REFERENCES materiales(id)
 );
 
+-- Usuario Administrador solicitado
+INSERT INTO usuarios (cedula, nombre, apellido, rol, departamento, password) 
+VALUES ('0000000', 'Admin', 'Principal', 'Admin', 'Tecnología', '123');
+
 -- Tabla de Asistencias para registro de entrada y salida con geolocalización
 CREATE TABLE asistencias (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -53,7 +61,3 @@ CREATE TABLE asistencias (
     longitud DECIMAL(11, 8),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
-
--- Usuario Administrador Temporal
-INSERT INTO usuarios (cedula, nombre, cargo, rol, password) 
-VALUES ('31325616', 'Admin Sistema', 'Administrador IT', 'admin', '123');

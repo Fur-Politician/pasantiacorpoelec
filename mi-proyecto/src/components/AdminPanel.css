@@ -1,0 +1,100 @@
+.admin-panel {
+    padding: 2rem;
+    background-color: var(--corpo-grey);
+    min-height: calc(100vh - 150px);
+    display: flex;
+    justify-content: center;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.admin-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border-top: 4px solid var(--corpo-black);
+}
+
+.admin-card h3 {
+    border-left: 4px solid var(--corpo-red);
+    padding-left: 10px;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    color: var(--corpo-black);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.admin-form input, 
+.admin-form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.admin-form input:focus {
+    border-color: var(--corpo-red);
+    outline: none;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    text-align: left;
+    background: var(--corpo-black);
+    color: white;
+    padding: 12px 10px;
+    font-size: 0.9rem;
+}
+
+.admin-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge.admin { background: #fee2e2; color: #991b1b; }
+.badge.operador { background: #dcfce7; color: #166534; }
+.badge.visor { background: #e0f2fe; color: #075985; }
+
+.btn-delete {
+    background: var(--corpo-red);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: opacity 0.2s;
+}
+
+.btn-delete:hover:not(:disabled) {
+    opacity: 0.8;
+}
+
+.btn-delete:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}

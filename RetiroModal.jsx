@@ -21,7 +21,7 @@ const RetiroModal = ({ isOpen, onClose, onSuccess }) => {
         if (isOpen) {
             const fetchMateriales = async () => {
                 try {
-                    const response = await fetch('http://localhost:5000/api/materiales');
+                    const response = await fetch('http://127.0.0.1:5000/api/materiales');
                     const data = await response.json();
                     // Simulación de datos si el endpoint está vacío
                     setMateriales(data.success ? data.data : [
@@ -41,7 +41,7 @@ const RetiroModal = ({ isOpen, onClose, onSuccess }) => {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/materiales/retiro', {
+            const response = await fetch('http://127.0.0.1:5000/api/materiales/retiro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

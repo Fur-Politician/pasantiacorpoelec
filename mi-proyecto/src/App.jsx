@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css'
 import RetiroMaterialesTable from '../../RetiroMaterialesTable';
+import AdminPanel from './components/AdminPanel';
 // Importación de activos locales
 import imgMateriales from './assets/materiales.jpg';
 import imgAsistencia from './assets/asistencia.jpg';
@@ -14,10 +15,15 @@ import logoCorpoelec from './assets/logo_corpoelec.png'; // Asumiendo que es un 
 function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [view, setView] = useState('inicio'); // inicio, login, inventario, asistencia, permisos
-  const [user, setUser] = useState(null); // Almacena los datos del usuario logueado
-  
-  const [cedulaInput, setCedulaInput] = useState('');
-  const [passInput, setPassInput] = useState('');
+  const [user, setUser] = useState(null); // Almacena datos del usuario logueado
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const [loginData, setLoginData] = useState({
+    cedula: '',
+    password: '',
+    nombre: '',
+    apellido: ''
+  });
 
   // Datos del slider (puedes reemplazar las URLs por assets locales)
   const slides = [
@@ -49,25 +55,27 @@ function App() {
   // Función para manejar el acceso a secciones protegidas
   const navigateTo = (targetView) => {
     if (!user && targetView !== 'inicio') {
-      setView('login');
+      setShowLoginModal(true);
     } else {
       setView(targetView);
     }
   };
 
-  // Manejador de Login con credenciales temporales
   const handleLogin = (e) => {
     e.preventDefault();
-    // Validación temporal solicitada
-    if (cedulaInput === '31325616' && passInput === '123') {
+    // Validación segura contra inyección (componente controlado)
+    // Credenciales de administrador solicitadas
+    if (loginData.cedula === '0000000' && loginData.password === '123') {
       setUser({
-        cedula: '31325616',
-        nombre: 'Admin Sistema',
-        rol: 'admin'
+        id: 1, // Cambiado para coincidir con el ID real en la DB (Auto-increment 1)
+        nombre: loginData.nombre || 'Admin',
+        cedula: loginData.cedula,
+        rol: 'Admin' // Coincidencia exacta con el ENUM de la base de datos
       });
-      setView('inicio');
+      setShowLoginModal(false);
+      alert('Bienvenido, Administrador');
     } else {
-      alert('Credenciales incorrectas');
+      alert('Credenciales no válidas para el sistema.');
     }
   };
 
@@ -81,15 +89,21 @@ function App() {
             <li><a href="#inventario" className={view === 'inventario' ? 'active' : ''} onClick={() => navigateTo('inventario')}>Inventario</a></li>
             <li><a href="#asistencia" className={view === 'asistencia' ? 'active' : ''} onClick={() => navigateTo('asistencia')}>Asistencia</a></li>
             <li><a href="#permisos" className={view === 'permisos' ? 'active' : ''} onClick={() => navigateTo('permisos')}>Permisos</a></li>
-            {/* Botón exclusivo para administradores */}
-            {user?.rol === 'admin' && (
-              <li><a href="#admin" className={view === 'admin' ? 'active' : ''} onClick={() => navigateTo('admin')}>Gestion Admin</a></li>
+            {user?.rol === 'Admin' && (
+              <li><a href="#admin" className={view === 'admin' ? 'active' : ''} onClick={() => setView('admin')}>Gestion Admin</a></li>
             )}
           </ul>
         </div>
         <div className="navbar-right">
-          {/* Espacio para el logo de Corpoelec */}
-          <div className="corpoelec-logo-placeholder">
+          <div className="navbar-actions">
+            {user ? (
+              <div className="user-info">
+                <span className="user-name">{user.nombre}</span>
+                <button className="btn-logout" onClick={() => { setUser(null); setView('inicio'); }}>Cerrar Sesión</button>
+              </div>
+            ) : (
+              <button className="btn-navbar-login" onClick={() => setShowLoginModal(true)}>Acceso</button>
+            )}
             <img src={logoCorpoelec} alt="Logo Corpoelec" className="corpoelec-logo" />
           </div>
         </div>
@@ -110,7 +124,7 @@ function App() {
                     <h1 className="slide-title">{slide.title}</h1>
                     <p className="slide-description">{slide.description}</p>
                     {!user && (
-                      <button className="btn-primary" onClick={() => setView('login')}>
+                      <button className="btn-primary" onClick={() => setShowLoginModal(true)}>
                         Iniciar Sesión
                       </button>
                     )}
@@ -151,39 +165,37 @@ function App() {
           </>
         )}
 
-        {view === 'login' && (
-          <section className="login-section animate-fade-in">
-            <div className="login-card">
-              <div className="login-header">
-                <h2>Acceso al Sistema</h2>
-                <p>Ingrese sus credenciales corporativas</p>
+        {/* Modal de Inicio de Sesión */}
+        {showLoginModal && (
+          <div className="modal-overlay">
+            <div className="login-modal animate-fade-in">
+              <div className="modal-header">
+                <h3>Acceso Administrativo</h3>
+                <button className="close-x" onClick={() => setShowLoginModal(false)}>&times;</button>
               </div>
               <form className="login-form" onSubmit={handleLogin}>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Nombre</label>
+                    <input type="text" value={loginData.nombre} onChange={(e) => setLoginData({...loginData, nombre: e.target.value})} placeholder="Ej: Juan" />
+                  </div>
+                  <div className="form-group">
+                    <label>Apellido</label>
+                    <input type="text" value={loginData.apellido} onChange={(e) => setLoginData({...loginData, apellido: e.target.value})} placeholder="Ej: Pérez" />
+                  </div>
+                </div>
                 <div className="form-group">
                   <label>Cédula de Identidad</label>
-                  <input 
-                    type="text" 
-                    placeholder="31325616" 
-                    required 
-                    value={cedulaInput}
-                    onChange={(e) => setCedulaInput(e.target.value)}
-                  />
+                  <input type="text" required value={loginData.cedula} onChange={(e) => setLoginData({...loginData, cedula: e.target.value})} placeholder="0000000" />
                 </div>
                 <div className="form-group">
                   <label>Contraseña</label>
-                  <input 
-                    type="password" 
-                    placeholder="123" 
-                    required 
-                    value={passInput}
-                    onChange={(e) => setPassInput(e.target.value)}
-                  />
+                  <input type="password" required value={loginData.password} onChange={(e) => setLoginData({...loginData, password: e.target.value})} placeholder="123" />
                 </div>
-                <button type="submit" className="btn-login">Ingresar</button>
-                <button type="button" className="btn-link" onClick={() => setView('inicio')}>Volver</button>
+                <button type="submit" className="btn-login">Verificar Credenciales</button>
               </form>
             </div>
-          </section>
+          </div>
         )}
 
         {view === 'inventario' && user && (
@@ -192,7 +204,11 @@ function App() {
           </section>
         )}
 
-        {(view === 'asistencia' || view === 'permisos' || view === 'admin') && user && (
+        {view === 'admin' && user?.rol === 'Admin' && (
+          <AdminPanel currentAdmin={user} />
+        )}
+
+        {(view === 'asistencia' || view === 'permisos') && user && (
           <div className="placeholder-view">
             <h2>Módulo de {view.charAt(0).toUpperCase() + view.slice(1)}</h2>
             <p>Contenido en desarrollo con la misma línea estética.</p>

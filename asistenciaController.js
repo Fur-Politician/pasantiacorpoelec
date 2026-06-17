@@ -1,4 +1,4 @@
-import db from '../config/db.js';
+import db from './config/db.js';
 
 /**
  * Controlador para la gestión de Asistencia (Entrada/Salida).
