@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css'
-import RetiroMaterialesTable from '../../RetiroMaterialesTable';
+import RetiroMaterialesTable from './components/RetiroMaterialesTable';
 import AdminPanel from './components/AdminPanel';
+import MaterialAssignmentForm from './components/MaterialAssignmentForm';
 // Importación de activos locales
 import imgMateriales from './assets/materiales.jpg';
 import imgAsistencia from './assets/asistencia.jpg';
@@ -16,6 +17,7 @@ function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [view, setView] = useState('inicio'); // inicio, login, inventario, asistencia, permisos
   const [user, setUser] = useState(null); // Almacena datos del usuario logueado
+  const [showAssignmentForm, setShowAssignmentForm] = useState(false); // Estado para mostrar el formulario de asignación
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const [loginData, setLoginData] = useState({
@@ -53,7 +55,8 @@ function App() {
   }, [slides.length]);
 
   // Función para manejar el acceso a secciones protegidas
-  const navigateTo = (targetView) => {
+  const navigateTo = (e, targetView) => {
+    if (e) e.preventDefault();
     if (!user && targetView !== 'inicio') {
       setShowLoginModal(true);
     } else {
@@ -61,21 +64,42 @@ function App() {
     }
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Validación segura contra inyección (componente controlado)
-    // Credenciales de administrador solicitadas
-    if (loginData.cedula === '0000000' && loginData.password === '123') {
-      setUser({
-        id: 1, // Cambiado para coincidir con el ID real en la DB (Auto-increment 1)
-        nombre: loginData.nombre || 'Admin',
-        cedula: loginData.cedula,
-        rol: 'Admin' // Coincidencia exacta con el ENUM de la base de datos
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cedula: loginData.cedula,
+          password: loginData.password
+        })
       });
-      setShowLoginModal(false);
-      alert('Bienvenido, Administrador');
-    } else {
-      alert('Credenciales no válidas para el sistema.');
+
+      // Verificamos si la respuesta es efectivamente JSON antes de parsear
+      const contentType = response.headers.get("content-type");
+      let result;
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      } else {
+        const errorText = await response.text();
+        throw new Error(`El servidor respondió con un formato no esperado (posible error interno): ${errorText.substring(0, 100)}...`);
+      }
+
+      if (response.ok && result.success) {
+        setUser(result.user);
+        setShowLoginModal(false);
+        if (result.user.rol === 'Admin') {
+          setView('admin');
+        } else {
+          setView('inicio');
+        }
+      } else {
+        alert('Error de Acceso: ' + (result.message || 'Credenciales incorrectas'));
+      }
+    } catch (error) {
+      console.error("Fallo en la comunicación con la API:", error);
+      alert('Error de conexión: Asegúrate de que el servidor backend esté encendido (node server.js)');
     }
   };
 
@@ -85,12 +109,12 @@ function App() {
       <nav className="navbar">
         <div className="navbar-left">
           <ul className="nav-links">
-            <li><a href="#inicio" className={view === 'inicio' ? 'active' : ''} onClick={() => setView('inicio')}>Inicio</a></li>
-            <li><a href="#inventario" className={view === 'inventario' ? 'active' : ''} onClick={() => navigateTo('inventario')}>Inventario</a></li>
-            <li><a href="#asistencia" className={view === 'asistencia' ? 'active' : ''} onClick={() => navigateTo('asistencia')}>Asistencia</a></li>
-            <li><a href="#permisos" className={view === 'permisos' ? 'active' : ''} onClick={() => navigateTo('permisos')}>Permisos</a></li>
+            <li><a href="#" className={view === 'inicio' ? 'active' : ''} onClick={(e) => { e.preventDefault(); setView('inicio'); }}>Inicio</a></li>
+            <li><a href="#inventario" className={view === 'inventario' ? 'active' : ''} onClick={(e) => navigateTo(e, 'inventario')}>Inventario</a></li>
+            <li><a href="#asistencia" className={view === 'asistencia' ? 'active' : ''} onClick={(e) => navigateTo(e, 'asistencia')}>Asistencia</a></li>
+            <li><a href="#permisos" className={view === 'permisos' ? 'active' : ''} onClick={(e) => navigateTo(e, 'permisos')}>Permisos</a></li>
             {user?.rol === 'Admin' && (
-              <li><a href="#admin" className={view === 'admin' ? 'active' : ''} onClick={() => setView('admin')}>Gestion Admin</a></li>
+              <li><a href="#" className={view === 'admin' ? 'active' : ''} onClick={(e) => { e.preventDefault(); setView('admin'); }}>Gestion Admin</a></li>
             )}
           </ul>
         </div>
@@ -146,17 +170,17 @@ function App() {
 
             {/* Sección de Acceso Rápido */}
             <section className="features-grid">
-              <div className="feature-card" onClick={() => navigateTo('inventario')}>
+              <div className="feature-card" onClick={(e) => navigateTo(e, 'inventario')}>
                 <div className="icon-box blue-accent">📦</div>
                 <h3>Materiales</h3>
                 <p>Solicitud y retiro de insumos técnicos.</p>
               </div>
-              <div className="feature-card" onClick={() => navigateTo('asistencia')}>
+              <div className="feature-card" onClick={(e) => navigateTo(e, 'asistencia')}>
                 <div className="icon-box red-accent">🕒</div>
                 <h3>Asistencia</h3>
                 <p>Registro de jornada laboral y guardias.</p>
               </div>
-              <div className="feature-card" onClick={() => navigateTo('permisos')}>
+              <div className="feature-card" onClick={(e) => navigateTo(e, 'permisos')}>
                 <div className="icon-box grey-accent">📄</div>
                 <h3>Permisos</h3>
                 <p>Gestión de solicitudes y justificativos.</p>
@@ -174,16 +198,6 @@ function App() {
                 <button className="close-x" onClick={() => setShowLoginModal(false)}>&times;</button>
               </div>
               <form className="login-form" onSubmit={handleLogin}>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Nombre</label>
-                    <input type="text" value={loginData.nombre} onChange={(e) => setLoginData({...loginData, nombre: e.target.value})} placeholder="Ej: Juan" />
-                  </div>
-                  <div className="form-group">
-                    <label>Apellido</label>
-                    <input type="text" value={loginData.apellido} onChange={(e) => setLoginData({...loginData, apellido: e.target.value})} placeholder="Ej: Pérez" />
-                  </div>
-                </div>
                 <div className="form-group">
                   <label>Cédula de Identidad</label>
                   <input type="text" required value={loginData.cedula} onChange={(e) => setLoginData({...loginData, cedula: e.target.value})} placeholder="0000000" />
@@ -200,7 +214,16 @@ function App() {
 
         {view === 'inventario' && user && (
           <section className="inventory-section animate-fade-in">
-            <RetiroMaterialesTable />
+            <div className="container mx-auto p-4">
+                {!showAssignmentForm ? (
+                    <>
+                        <button className="mb-4 btn-primary bg-blue-600 hover:bg-blue-700" onClick={() => setShowAssignmentForm(true)}>+ Registrar Nueva Asignación</button>
+                        <RetiroMaterialesTable />
+                    </>
+                ) : (
+                    <MaterialAssignmentForm user={user} onCancel={() => setShowAssignmentForm(false)} onSaveSuccess={() => { setShowAssignmentForm(false); /* Aquí podrías recargar la tabla de materiales si fuera necesario */ }} />
+                )}
+            </div>
           </section>
         )}
 
